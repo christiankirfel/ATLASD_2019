@@ -246,13 +246,20 @@
 \end{frame}
 
 \begin{frame}{ANN setup}
-\begin{block}{Hyper-parameter scan results}
+\begin{block}{Discriminator setup}
 \begin{itemize}
 \item Input: \num{14} variables motivated by a BDT variable scan.
 \item Hidden layers: \num{6} \ELU layers $\times$ \num{128} nodes each
 \item Output layer: \num{1} \SIGMOID node
-\item Optimisation: SGD, \textcolor{red}{learning rate $=0.06$}, momentum $=0.3$, no nesterov, no decay
-\item Duration: 600 epochs
+\item Optimisation: SGD, \textcolor{red}{learning rate $=0.01$}, momentum $=0.3$, no nesterov, no decay
+\end{itemize}
+\end{block}
+\begin{block}{Adversary setup}
+\begin{itemize}
+\item Input: \num{14} variables motivated by a BDT variable scan.
+\item Hidden layers: \num{6} \ELU layers $\times$ \num{128} nodes each
+\item Output layer: \num{1} \SIGMOID node
+\item Optimisation: SGD, \textcolor{red}{learning rate $=0.01$}, momentum $=0.3$, no nesterov, no decay
 \end{itemize}
 \end{block}
 \end{frame}
@@ -272,14 +279,12 @@
 		\label{fig:simple:final:loss}
 	\end{subfigure}
 \end{figure}
+\begin{itemize}
+\item The separation is visibly bad.
+\item The agreement between nominal and systematics has barely improved
+\item Losses show bad behaviour
+\end{itemize}
 \end{frame}
-
-\begin{frame}{Second setup}
-\end{frame}
-
-\begin{frame}{Conclusions}
-\end{frame}
-
 
 
 \section{Background Labeling}
@@ -303,7 +308,7 @@
 \begin{tabular}{|l|l|l|}
 \hline
                       & Discriminator & Adversary \\ \hline
-\ttbar &         0      &     1/0      \\ \hline
+\ttbar &         0      &     1/0 (50 \% mix)     \\ \hline
 \tW DR &         1     &      1    \\ \hline
 \tW DS &         1     &      0    \\ \hline
 \end{tabular}
@@ -317,8 +322,6 @@
 \end{block}
 \end{frame}
 
-\begin{frame}{fixes}
-\end{frame}
 
 \begin{frame}{ttbar weights for the adversarial training}
     \begin{figure}[htbp]
@@ -351,10 +354,50 @@
 \end{frame}
 
 
-\begin{frame}{splitting}
+
+\begin{frame}{ttbar weights for the adversarial training}
+    \begin{figure}[htbp]
+    \caption{Weight = 0}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{discriminator_50per.png}
+        \label{fig:simple:final:sepa}
+    \end{subfigure}
+\quad
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{adversary_50per.png}
+        \label{fig:simple:final:syst}
+    \end{subfigure}
+    \end{figure}
+    \vspace{-0.7cm}
+    \begin{figure}[htbp]
+    \caption{Weight = 1}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{losses_50per.png}
+        \label{fig:simple:final:sepa}
+    \end{subfigure}
+\quad
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{roc_50per.png}
+        \label{fig:simple:final:syst}
+    \end{subfigure}
+    \end{figure}
 \end{frame}
 
+
 \begin{frame}{Conclusions}
+\begin{block}{Improvements and insights}
+\begin{itemize}
+\item sdfw
+\end{itemize}
+\end{block}
+\begin{block}{Weighting \ttbar for the adversary}
+\begin{itemize}
+\item Applying an additional weight to the \ttbar events for the adversarial training only
+\item Varied the weights between \num{0.0} and \num{1.0}
+\end{itemize}
+\end{block}
 \end{frame}
 
 \section{Conclusions}
