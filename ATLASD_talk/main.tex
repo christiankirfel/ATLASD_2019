@@ -44,7 +44,10 @@
   {./figures_misc/}%
   {./app1/}%
   {./app2/}%
-  {./app3/}%
+  {./misc/}%
+  {./ANN_plots/} %
+  {./NN_plots/} %
+  {tagging_plots/}%
 }
 
 
@@ -92,8 +95,8 @@
 
 \begin{document} 
 
-\title[Bachelorvortrag]{Hyperparameter Optimisation of an Adversarial Neural Network in the \tW channel at \SI{13}{\tera \electronvolt} with ATLAS}
-\subtitle{4th of April 2019}
+\title[Bachelorvortrag]{Reducing the effect of nominal background samples on signal sample systematics using an adversarial neural network in the \tW dilepton channel}
+\subtitle{18th of September 2019}
 \author{Christian Kirfel}
 %\institute{Universtität Bonn}
         
@@ -126,28 +129,149 @@
 \section{Intro}
 
 \begin{frame}{Outline}
+\begin{itemize}
+    \item $\Ptop\PW$ and $\Ptop\APtop$ separation
+    \vspace{0.3cm}
+    \item Artificial neural networks and adversarial neural networks as a possible solution
+    \vspace{0.3cm}
+    \item Introduction to hyperparameters
+    \vspace{0.3cm}
+    \item Preliminary training results for an adversarial neural network
+\end{itemize}
 \end{frame}
 
-\begin{frame}{tt/tw Separation}
+\begin{frame}{$\Ptop\PW$ and $\Ptop\APtop$ separation}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width = 0.8\textwidth]{tw.png}
+        \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width = 0.8\textwidth]{tt.png}
+        \end{figure}
+    \end{column}
+\end{columns}
+\begin{itemize}
+    \item Problem: Cross-sections of $\Ptop\PW$ about 10 times smaller than $\Ptop\APtop$
+    \item Interference in NLO order
+    \item Instead of applying cut $\longrightarrow$ Neural networks
+\end{itemize}
 \end{frame}
 
 \section{NN}
 
-\begin{frame}{NN Setup}
+\begin{frame}{Setup of the classifier}
+\begin{block}{Hyper-parameter scan results}
+\begin{itemize}
+\item Input: \num{14} variables motivated by a BDT variable scan.
+\item Hidden layers: \num{6} \ELU layers $\times$ \num{128} nodes each
+\item Output layer: \num{1} \SIGMOID node
+\item Optimisation: SGD, \textcolor{red}{learning rate $=0.06$}, momentum $=0.3$, no nesterov, no decay
+\item Duration: 600 epochs
+\end{itemize}
+\end{block}
 \end{frame}
 
-\begin{frame}{NN Results}
+\begin{frame}{Simple network results}
+\vspace{-2mm}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{standard_separation}
+        \caption{Separation}
+        \label{fig:simple:final:sepa}
+    \end{subfigure}
+\quad
+%    \begin{subfigure}[b]{0.4\textwidth}
+%        \includegraphics[width=\textwidth]{standard_syst}
+%        \caption{Systematics}
+%        \label{fig:simple:final:syst}
+%    \end{subfigure}
+
+    \begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{standard_ROC}
+		\caption{ROC curve}
+		\label{fig:simple:final:roc}
+	\end{subfigure}
+\quad
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{standard_losses}
+		\caption{Losses}
+		\label{fig:simple:final:loss}
+	\end{subfigure}
+\end{figure}
 \end{frame}
 
 \section{ANN}
 
+\begin{frame}{Adversarial Neural Networks}
+    \begin{itemize}
+        %\item Originally introduced as Generative adversarial %neural networks to overcome weaknesses of generative %networks \cite{2014arXiv1406.2661G}
+        \item Neural networks have no info on systematic uncertainties 
+        \vspace{0.2cm}
+        \item Introduction of a second, adversarial network classifying between nominal and systematic
+        \vspace{0.2cm}
+        \item Combined loss function $\mathcal{L}_{adversarial}\left( \theta_f, \theta_t \right) = \mathcal{L}(\theta_f) - \lambda \mathcal{L}(\theta_f, \theta_r)$
+        \vspace{0.2cm}
+        \item Network 1: signal/background separation
+        \vspace{0.2cm}
+        \item Network 2: nominal/systematic separation
+        \vspace{0.2cm}
+        \item Expectation: network 1 succeeds, network 2 fails
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Setup of the ANN}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{ANN_sketch.png}
+        \label{fig:my_label}
+    \end{figure}
+\end{frame}
+
 \begin{frame}{ANN}
+\begin{table}[]
+\begin{tabular}{|l|l|l|}
+\hline
+                      & Discriminator & Adversary \\ \hline
+\ttbar &         0      &     1      \\ \hline
+\tW DR &         1     &      1    \\ \hline
+\tW DS &         1     &      0    \\ \hline
+\end{tabular}
+\end{table}
 \end{frame}
 
 \begin{frame}{ANN setup}
+\begin{block}{Hyper-parameter scan results}
+\begin{itemize}
+\item Input: \num{14} variables motivated by a BDT variable scan.
+\item Hidden layers: \num{6} \ELU layers $\times$ \num{128} nodes each
+\item Output layer: \num{1} \SIGMOID node
+\item Optimisation: SGD, \textcolor{red}{learning rate $=0.06$}, momentum $=0.3$, no nesterov, no decay
+\item Duration: 600 epochs
+\end{itemize}
+\end{block}
 \end{frame}
 
 \begin{frame}{ANN results}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{app2_syst.pdf}
+		\caption{Separation}
+		\label{fig:simple:final:roc}
+	\end{subfigure}
+\quad
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{app2_losses2.pdf}
+		\caption{Losses}
+		\label{fig:simple:final:loss}
+	\end{subfigure}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Second setup}
@@ -160,14 +284,72 @@
 
 \section{Background Labeling}
 
-\begin{frame}{ttbar labels}
+\begin{frame}{Improvement plans}
+\begin{block}{Assumption}
+    Labelling \ttbar as a nominal sample results in a strong bias
+\end{block}
+\begin{block}{Possible solution}
+    \begin{itemize}
+        \item Randomly label \ttbar events as either nominal or systematic
+        \item Add additional weighting to the \ttbar sample for the adversarial network only
+        \item Exclude the \ttbar sample for the adversarial training completely
+    \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Applied fixes}
+\begin{block}{Re-labelling}
+\begin{table}[]
+\begin{tabular}{|l|l|l|}
+\hline
+                      & Discriminator & Adversary \\ \hline
+\ttbar &         0      &     1/0      \\ \hline
+\tW DR &         1     &      1    \\ \hline
+\tW DS &         1     &      0    \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+\begin{block}{Weighting \ttbar for the adversary}
+\begin{itemize}
+\item Applying an additional weight to the \ttbar events for the adversarial training only
+\item Varied the weights between \num{0.0} and \num{1.0}
+\end{itemize}
+\end{block}
 \end{frame}
 
 \begin{frame}{fixes}
 \end{frame}
 
-\begin{frame}{weights}
+\begin{frame}{ttbar weights for the adversarial training}
+    \begin{figure}[htbp]
+    \caption{Weight = 0}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{separation_adversaryweight0.png}
+        \label{fig:simple:final:sepa}
+    \end{subfigure}
+\quad
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{separation_discriminatorweight0.png}
+        \label{fig:simple:final:syst}
+    \end{subfigure}
+    \end{figure}
+    \vspace{-0.7cm}
+    \begin{figure}[htbp]
+    \caption{Weight = 1}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{separation_adversaryweight1.png}
+        \label{fig:simple:final:sepa}
+    \end{subfigure}
+\quad
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=0.8\textwidth]{separation_discriminatorweight1.png}
+        \label{fig:simple:final:syst}
+    \end{subfigure}
+    \end{figure}
 \end{frame}
+
 
 \begin{frame}{splitting}
 \end{frame}
